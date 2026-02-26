@@ -81,7 +81,7 @@ class TranslatorAgent(BaseToolAgent):
             process_bar.progress(5)
             sys.stderr = sys.__stderr__
 
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(trust_env=True) as session:
                 sem = asyncio.Semaphore(10)  # Considering the api response speed, processing one section approximately takes about 10 seconds, and initiating a call every half second, 
                                              # around 10 should not waste api tokens
 
@@ -138,7 +138,7 @@ class TranslatorAgent(BaseToolAgent):
             sys.stderr = open(os.devnull, "w")
             status_text = st.empty()
             sys.stderr = sys.__stderr__
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(trust_env=True) as session:
                 error_parts = [error_part["num_or_ph"] for error_part in self.errors_report]
                 self.log(
                     f"🤖💬 Starting retranslating for error parts:{error_parts}, the {error_retry_count + 1} chance for {Maxtry} total.")
@@ -288,7 +288,7 @@ class TranslatorAgent(BaseToolAgent):
 
     async def _retranslate_error_parts(self, secs, caps, envs, session) -> Any:
 
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(trust_env=True) as session:
             sem = asyncio.Semaphore(20)  
 
             sys.stderr = open(os.devnull, 'w')
